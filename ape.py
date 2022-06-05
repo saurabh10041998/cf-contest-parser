@@ -5,6 +5,19 @@ import re
 import pdb
 from bs4 import BeautifulSoup
 import sys
+import logging
+import os
+
+INPUT = 0
+OUTPUT = 1
+SCRIPT_PATH = ""
+
+try:
+    if os.environ['SCRIPT_PATH']:
+        SCRIPT_PATH = os.environ['SCRIPT_PATH']
+except KeyError:
+        SCRIPT_PATH = ""
+        logging.warning("\x1B[33mSCRIPT_PATH env not set, running in src dir\x1B[0m")
 
 def getCipher():
     resp = requests.get("https://codeforces.com")
@@ -13,7 +26,8 @@ def getCipher():
     return c_tok
 
 def getRCPC(cipher):
-    output = subprocess.check_output(['node', 'ape.js', cipher]).decode()
+    js_script_path = os.path.join(SCRIPT_PATH, 'ape.js')
+    output = subprocess.check_output(['node', js_script_path, cipher]).decode()
     token = re.search("RCPC=(.*)", output).group(1)
     return token
 
@@ -46,13 +60,8 @@ rcpc_token = getRCPC(cipher).split(";")[0]
 cookies = {"RCPC": rcpc_token}
 assert(len(sys.argv) > 1)
 contest_no = int(sys.argv[1])
-problem_code = sys.argv[2]
-
-
-INPUT = 0
-OUTPUT = 1
+problem_code = sys.argv[2].upper()
 testcases = parse_problem(contest_no, problem_code, cookies)
-print(testcases)
 ## write test cases to file
 for idx, tc in enumerate(testcases):
     with open(f"in{idx + 1}.txt", 'w') as f:
