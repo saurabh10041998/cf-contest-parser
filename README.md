@@ -20,4 +20,9 @@ prepare.sh 1691 a
 
 This will parse the problem a of contest 1691 and will put input and output test cases file under `$(pwd)/cf/contest/1691/a`
 
+## Important Note:
+Update: **26/07/2022**
+Looks like codeforces has removed their regular AES cipher check. So original <a href="https://github.com/xalanq/cf-tool">cf tool</a> will work.
+But I am keeping this project in case they decide to add the support back.
+
 
